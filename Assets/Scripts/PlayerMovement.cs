@@ -2,54 +2,91 @@
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Components")]
+    public CharacterController controller;
+    public Animator animator;
+    public GameObject punchHitbox; // ลากวัตถุ Hitbox มาใส่
+
     [Header("Movement Settings")]
-    public CharacterController controller; // ลาก Character Controller มาใส่
-    public float speed = 10f;          // ความเร็วในการเดิน
-    public float gravity = -9.81f;      // แรงโน้มถ่วง (ถ้าอยากให้ตกลงเร็วๆ ให้เพิ่มค่าติดลบ เช่น -15)
+    public float walkSpeed = 6f;
+    public float runSpeed = 12f;
+    public float gravity = -20f;
+    public float jumpHeight = 2f;
 
-    [Header("Jump Settings")]
-    public float jumpHeight = 3f;      // ความสูงของการกระโดด
+    [Header("Mouse Rotation")]
+    public float mouseSensitivity = 100f;
 
-    [Header("Ground Check")]
-    public Transform groundCheck;      // ลากวัตถุ GroundCheck มาใส่
-    public float groundDistance = 0.4f; // รัศมีในการเช็คพื้น
-    public LayerMask groundMask;       // เลือก Layer "Ground"
+    [Header("Attack Settings")]
+    public float attackCooldown = 0.5f;
+    float lastAttackTime;
+    [Header("Combat Settings")]
+    public float fightingModeDuration = 3f; // จะค้างท่าเตรียมสู้ไว้นานแค่ไหน (วินาที)
+    float fightingTimer;
 
     Vector3 velocity;
-    bool isGrounded;
 
     void Update()
     {
-        // 1. เช็คว่าอยู่บนพื้นไหม
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-        // ถ้าอยู่บนพื้นและกำลังตก ให้หยุดความเร็วที่ติดลบไว้ (ให้แรงกดนิดหน่อยเพื่อให้เสถียร)
-        if (isGrounded && velocity.y < 0)
+        // --- โลจิกนับเวลาถอยหลังการค้างท่าเตรียมสู้ ---
+        if (fightingTimer > 0)
         {
-            velocity.y = -2f;
+            fightingTimer -= Time.deltaTime;
+            animator.SetBool("isFighting", true);
+        }
+        else
+        {
+            animator.SetBool("isFighting", false);
         }
 
-        // 2. รับค่าการเดิน (WASD)
-        float x = Input.GetAxis("Horizontal"); // A (-1), D (1)
-        float z = Input.GetAxis("Vertical");   // S (-1), W (1)
+        // --- แก้ไขส่วนการโจมตี (HandleAttack) ---
+        if (Input.GetMouseButtonDown(0))
+        {
+            animator.SetTrigger("punch");
+            fightingTimer = fightingModeDuration; // รีเซ็ตเวลานับถอยหลังทุกครั้งที่ต่อย
+            lastAttackTime = Time.time;
+        }
 
-        // 3. คำนวณทิศทางเดิน (อิงตามหน้าตัวละคร)
+        // ... ส่วนอื่นๆ ของโค้ดคงเดิม ...
+        // 1. หมุนตัวละครด้วยคลิกขวา
+        if (Input.GetMouseButton(1))
+        {
+            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+            transform.Rotate(Vector3.up * mouseX);
+        }
+
+        // 2. คลิกซ้ายเพื่อต่อย (ถ้าพ้นคูลดาวน์)
+        if (Input.GetMouseButtonDown(0) && Time.time >= lastAttackTime + attackCooldown)
+        {
+            animator.SetTrigger("punch"); // ชื่อ Parameter ใน Animator
+            lastAttackTime = Time.time;
+        }
+
+        // 3. ระบบเดิน
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
         Vector3 move = transform.right * x + transform.forward * z;
 
-        // 4. สั่งให้เดิน (ใช้ Time.deltaTime เพื่อให้เดินสมูททุกคอม)
-        controller.Move(move * speed * Time.deltaTime);
-
-        // 5. การกระโดด (กดปุ่ม Space และต้องอยู่บนพื้น)
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (move.magnitude >= 0.1f)
         {
-            // สูตรคำนวณ v = sqrt(h * -2 * g)
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            animator.SetBool("isWalking", true);
+            float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+            controller.Move(move * currentSpeed * Time.deltaTime);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
         }
 
-        // 6. คำนวณแรงโน้มถ่วง
+        // 4. กระโดดและแรงโน้มถ่วง
+        if (Input.GetButtonDown("Jump") && controller.isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
         velocity.y += gravity * Time.deltaTime;
-
-        // 7. สั่งให้ตกลงมา (หรือกระโดดขึ้นไป)
         controller.Move(velocity * Time.deltaTime);
     }
+
+    // ฟังก์ชันเปิด/ปิด Hitbox (เรียกใช้ผ่าน Animation Event ตามที่เคยแนะนำ)
+    public void EnablePunchHitbox() { if (punchHitbox) punchHitbox.SetActive(true); }
+    public void DisablePunchHitbox() { if (punchHitbox) punchHitbox.SetActive(false); }
 }
