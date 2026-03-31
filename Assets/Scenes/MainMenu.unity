@@ -128,7 +128,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9100332}
-  - component: {fileID: 9100331}
+  - component: {fileID: 9100335}
+  - component: {fileID: 9100334}
+  - component: {fileID: 9100333}
   m_Layer: 0
   m_Name: NetworkHandler
   m_TagString: Untagged
@@ -136,21 +138,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &9100331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9100330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7f0dc611a792084e82e05be292a2037, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomCodeInput: {fileID: 0}
-  connectionUiRoot: {fileID: 0}
-  leaveRoomButton: {fileID: 0}
 --- !u!4 &9100332
 Transform:
   m_ObjectHideFlags: 0
@@ -166,6 +153,48 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9100333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653c9f73b2b0a4a41ac3cc84481655a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab:
+    RawGuidValue: 00000000000000000000000000000000
+--- !u!114 &9100334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 912f449cd1ef88445a4c84aa6620e84f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9100335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94bfbd04d6ce2bc47830cab00f65f1f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomCodeInput: {fileID: 0}
+  playerNameInput: {fileID: 0}
+  connectionUiRoot: {fileID: 0}
+  leaveRoomButton: {fileID: 0}
 --- !u!1 &36875491
 GameObject:
   m_ObjectHideFlags: 0
@@ -1369,7 +1398,7 @@ GameObject:
   - component: {fileID: 1103686689}
   - component: {fileID: 1103686688}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ButtonAUTOJOIN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1534,7 +1563,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Play
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

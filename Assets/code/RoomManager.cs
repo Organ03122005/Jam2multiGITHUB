@@ -1,4 +1,5 @@
-﻿using Fusion;
+﻿using System.Linq;
+using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,6 +40,20 @@ public class RoomManager : MonoBehaviour, INetworkRunnerCallbacks
             _runner.LoadScene("GameScene");
         }
     }
+    void Update()
+    {
+        if (_runner != null)
+        {
+            int current = _runner.ActivePlayers.Count();
+            Debug.Log($"Players: {current}/8");
+        }
+        if (_runner.ActivePlayers.Count() >= 8)
+        {
+            Debug.Log("Room Full");
+            return;
+        }
+    }
+
 
     // (ปล่อยว่างได้)
     public void OnInput(NetworkRunner r, NetworkInput i) { }

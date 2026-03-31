@@ -96,7 +96,7 @@ public class FusionConnectionHandler : MonoBehaviour
 
             PlayerCount = 8, // 🔥 จำกัดห้อง 8 คน
 
-            Scene = SceneRef.FromName("RoomScene"), // 🔥 เข้า RoomScene
+            Scene = SceneRef.FromIndex(1), // 🔥 เข้า RoomScene
 
             SceneManager = _sceneManager // ✅ ใช้ตัวเดิม
         });
